@@ -28,9 +28,7 @@ type Transaction struct {
 	Income      int       `json:"income"`
 	Expense     int       `json:"expense"`
 	CategoryID  int       `json:"category_id"`
-	Category    Category  `json:"category,omitempty"`
 	UserID      int       `json:"user_id"`
-	User        User      `json:"user,omitempty"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -42,10 +40,8 @@ type Transaction struct {
 type Budget struct {
 	ID          int       `json:"id"`
 	CategoryID  int       `json:"category_id"`
-	Category    Category  `json:"category,omitempty"`
 	Price       int       `json:"price"`
 	UserID      int       `json:"user_id"`
-	User        User      `json:"user,omitempty"`
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`

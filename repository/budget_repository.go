@@ -28,7 +28,7 @@ func GetAllBudgets(db *sql.DB) (result []structs.Budget, err error) {
 }
 
 func InsertBudget(db *sql.DB, budget structs.Budget) (err error) {
-	sql := "INSERT INTO budget(id, category_id, price, user_id, description, created_at, created_by, updated_at, updated_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
+	sql := "INSERT INTO budget(id, category_id, price, user_id, description, created_at, created_by, updated_at, updated_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
 
 	errs := db.QueryRow(sql, budget.ID, budget.CategoryID, budget.Price, budget.UserID, budget.Description, budget.CreatedAt, budget.CreatedBy, budget.UpdatedAt, budget.UpdatedBy)
 

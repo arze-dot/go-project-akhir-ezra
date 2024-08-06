@@ -28,7 +28,7 @@ func GetAllTransactions(db *sql.DB) (result []structs.Transaction, err error) {
 }
 
 func InsertTransaction(db *sql.DB, transaction structs.Transaction) (err error) {
-	sql := "INSERT INTO transaction(id, income, expense, category_id, user_id, title, description, created_at, created_by, updated_at, updated_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)"
+	sql := "INSERT INTO transaction(id, income, expense, category_id, user_id, title, description, created_at, created_by, updated_at, updated_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)"
 
 	errs := db.QueryRow(sql, transaction.ID, transaction.Income, transaction.Expense, transaction.CategoryID, transaction.UserID, transaction.Title, transaction.Description, transaction.CreatedAt, transaction.CreatedBy, transaction.UpdatedAt, transaction.UpdatedBy)
 

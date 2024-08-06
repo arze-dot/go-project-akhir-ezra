@@ -6,7 +6,6 @@ import (
 	"go-project-akhir-ezra/controllers"
 	"go-project-akhir-ezra/database"
 	"go-project-akhir-ezra/middleware"
-	"go-project-akhir-ezra/seeder"
 	"log"
 	"os"
 
@@ -58,7 +57,7 @@ func main() {
 	defer DB.Close()
 
 	// Seed the database
-	seeder.SeedUsers(DB)
+	// seeder.SeedUsers(DB)
 	fmt.Println("Successfully connected!")
 
 	router := gin.Default()
@@ -87,6 +86,9 @@ func main() {
 		authorized.POST("/budget", controllers.InsertBudget)
 		authorized.PUT("/budget/:id", controllers.UpdateBudget)
 		authorized.DELETE("/budget/:id", controllers.DeleteBudget)
+
+		router.GET("/budget-status", controllers.GetBudgetStatus)
+
 	}
 
 	router.Run(":8080")
