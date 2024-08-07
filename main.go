@@ -14,6 +14,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var (
@@ -21,6 +24,19 @@ var (
 	err error
 )
 
+// @title Budget Tracking API
+// @version 1.0
+// @description This is a sample API for managing budgets, categories, and transactions.
+// @termsOfService http://example.com/terms/
+
+// @contact.name API Support
+// @contact.url http://example.com/support
+// @contact.email support@example.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8080
 func main() {
 	err = godotenv.Load("config/.env")
 	if err != nil {
@@ -64,6 +80,7 @@ func main() {
 	router := gin.Default()
 
 	router.POST("/login", controllers.Login)
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	authorized := router.Group("/")
 	authorized.Use(middleware.JWTAuthMiddleware())

@@ -11,6 +11,18 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Login godoc
+// @Summary User login
+// @Description Authenticates a user and returns a JWT token
+// @Tags auth
+// @Accept  json
+// @Produce  json
+// @Param login body struct{Username string; Password string} true "Login credentials"
+// @Success 200 {object} gin.H{"token": string}
+// @Failure 400 {object} gin.H{"error": string} "Invalid request"
+// @Failure 401 {object} gin.H{"error": string} "Invalid username or password"
+// @Failure 500 {object} gin.H{"error": string} "Database error or token generation failure"
+// @Router /login [post]
 func Login(c *gin.Context) {
 	var loginVals struct {
 		Username string `json:"username"`

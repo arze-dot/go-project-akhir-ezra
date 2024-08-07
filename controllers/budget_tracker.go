@@ -9,6 +9,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetBudgetStatus godoc
+// @Summary Get budget status
+// @Description Retrieve the budget status for a given user and category
+// @Tags budgets
+// @Accept  json
+// @Produce  json
+// @Param category_id query int true "Category ID"
+// @Param user_id query int true "User ID"
+// @Success 200 {object} map[string]interface{} "Budget status"
+// @Failure 400 {object} gin.H "Invalid input"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /budget-status [get]
 func GetBudgetStatus(c *gin.Context) {
 	categoryID, err := strconv.Atoi(c.Query("category_id"))
 	if err != nil {
