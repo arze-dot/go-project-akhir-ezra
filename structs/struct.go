@@ -48,3 +48,15 @@ type Budget struct {
 	CreatedBy   int       `json:"created_by"`
 	UpdatedBy   int       `json:"updated_by"`
 }
+
+type BudgetStatus struct {
+	CategoryName    string  `json:"category_name"`
+	BudgetPrice     float64 `json:"budget_price"`
+	TotalExpense    float64 `json:"totalExpense"`
+	BudgetRemaining float64 `json:"budget_remaining"`
+	OnTrack         bool    `json:"onTrack"`
+}
+
+type ErrorResponse struct {
+	Error string `json:"error"`
+}

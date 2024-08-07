@@ -43,11 +43,15 @@ func UpdateUser(db *sql.DB, user structs.User) (err error) {
 	return errs.Err()
 }
 
-func DeleteUser(db *sql.DB, user structs.User) (err error) {
-	sql := "DELETE FROM users WHERE id = $1"
+func DeleteUser(db *sql.DB, id int) (err error) {
+	query := "DELETE FROM users WHERE id = ?"
 
-	errs := db.QueryRow(sql, user.ID)
-	return errs.Err()
+	_, err = db.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func GetUserByUsername(db *sql.DB, username string) (structs.User, error) {

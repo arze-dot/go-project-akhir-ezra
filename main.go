@@ -28,8 +28,10 @@ var (
 // @title Budget Tracking API
 // @version 1.0
 // @description This is a sample API for managing budgets, categories, and transactions.
-
 // @host localhost:8080
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
 // @BasePath /
 func main() {
 	err = godotenv.Load("config/.env")

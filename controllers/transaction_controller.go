@@ -17,8 +17,9 @@ import (
 // @Accept  json
 // @Produce  json
 // @Success 200 {array} structs.Transaction
-// @Failure 500 {object} gin.H
-// @Router /transactions [get]
+// @Failure 500 {object} map[string]string
+// @Security Bearer
+// @Router /transaction [get]
 func GetAllTransactions(c *gin.Context) {
 	var (
 		result gin.H
@@ -47,19 +48,22 @@ func GetAllTransactions(c *gin.Context) {
 // @Produce  json
 // @Param transaction body structs.Transaction true "Transaction data"
 // @Success 200 {object} structs.Transaction
-// @Failure 500 {object} gin.H
-// @Router /transactions [post]
+// @Failure 500 {object} map[string]string
+// @Security Bearer
+// @Router /transaction [post]
 func InsertTransaction(c *gin.Context) {
 	var transaction structs.Transaction
 
 	err := c.BindJSON(&transaction)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
 	}
 
 	err = repository.InsertTransaction(database.DbConnection, transaction)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		return
 	}
 
 	c.JSON(http.StatusOK, transaction)
@@ -74,22 +78,25 @@ func InsertTransaction(c *gin.Context) {
 // @Param id path int true "Transaction ID"
 // @Param transaction body structs.Transaction true "Updated transaction data"
 // @Success 200 {object} structs.Transaction
-// @Failure 500 {object} gin.H
-// @Router /transactions/{id} [put]
+// @Failure 500 {object} map[string]string
+// @Security Bearer
+// @Router /transaction/{id} [put]
 func UpdateTransaction(c *gin.Context) {
 	var transaction structs.Transaction
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	err := c.BindJSON(&transaction)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
 	}
 
 	transaction.ID = id
 
 	err = repository.UpdateTransaction(database.DbConnection, transaction)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		return
 	}
 
 	c.JSON(http.StatusOK, transaction)
@@ -103,8 +110,9 @@ func UpdateTransaction(c *gin.Context) {
 // @Produce  json
 // @Param id path int true "Transaction ID"
 // @Success 200 {object} structs.Transaction
-// @Failure 500 {object} gin.H
-// @Router /transactions/{id} [delete]
+// @Failure 500 {object} map[string]string
+// @Security Bearer
+// @Router /transaction/{id} [delete]
 func DeleteTransaction(c *gin.Context) {
 	var transaction structs.Transaction
 	id, _ := strconv.Atoi(c.Param("id"))
@@ -112,7 +120,8 @@ func DeleteTransaction(c *gin.Context) {
 	transaction.ID = id
 	err := repository.DeleteTransaction(database.DbConnection, transaction)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		return
 	}
 
 	c.JSON(http.StatusOK, transaction)

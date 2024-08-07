@@ -17,26 +17,20 @@ import (
 // @Accept  json
 // @Produce  json
 // @Success 200 {array} structs.User
-// @Failure 500 {object} gin.H
-// @Router /users [get]
+// @Failure 500 {object} map[string]interface{}
+// @Security Bearer
+// @Router /user [get]
 func GetAllUsers(c *gin.Context) {
-	var (
-		result gin.H
-	)
-
 	users, err := repository.GetAllUsers(database.DbConnection)
 
 	if err != nil {
-		result = gin.H{
-			"result": err.Error(),
-		}
-	} else {
-		result = gin.H{
-			"result": users,
-		}
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, users)
 }
 
 // InsertUser godoc
@@ -47,19 +41,24 @@ func GetAllUsers(c *gin.Context) {
 // @Produce  json
 // @Param user body structs.User true "User data"
 // @Success 200 {object} structs.User
-// @Failure 500 {object} gin.H
-// @Router /users [post]
+// @Failure 500 {object} map[string]interface{}
+// @Security Bearer
+// @Router /user [post]
 func InsertUser(c *gin.Context) {
 	var user structs.User
 
-	err := c.BindJSON(&user)
-	if err != nil {
-		panic(err)
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "Invalid request",
+		})
+		return
 	}
 
-	err = repository.InsertUser(database.DbConnection, user)
-	if err != nil {
-		panic(err)
+	if err := repository.InsertUser(database.DbConnection, user); err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": "Database error",
+		})
+		return
 	}
 
 	c.JSON(http.StatusOK, user)
@@ -74,22 +73,27 @@ func InsertUser(c *gin.Context) {
 // @Param id path int true "User ID"
 // @Param user body structs.User true "Updated user data"
 // @Success 200 {object} structs.User
-// @Failure 500 {object} gin.H
-// @Router /users/{id} [put]
+// @Failure 500 {object} map[string]interface{}
+// @Security Bearer
+// @Router /user/{id} [put]
 func UpdateUser(c *gin.Context) {
 	var user structs.User
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	err := c.BindJSON(&user)
-	if err != nil {
-		panic(err)
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "Invalid request",
+		})
+		return
 	}
 
 	user.ID = id
 
-	err = repository.UpdateUser(database.DbConnection, user)
-	if err != nil {
-		panic(err)
+	if err := repository.UpdateUser(database.DbConnection, user); err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": "Database error",
+		})
+		return
 	}
 
 	c.JSON(http.StatusOK, user)
@@ -103,17 +107,20 @@ func UpdateUser(c *gin.Context) {
 // @Produce  json
 // @Param id path int true "User ID"
 // @Success 200 {object} structs.User
-// @Failure 500 {object} gin.H
-// @Router /users/{id} [delete]
+// @Failure 500 {object} map[string]interface{}
+// @Security Bearer
+// @Router /user/{id} [delete]
 func DeleteUser(c *gin.Context) {
-	var user structs.User
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	user.ID = id
-	err := repository.DeleteUser(database.DbConnection, user)
-	if err != nil {
-		panic(err)
+	if err := repository.DeleteUser(database.DbConnection, id); err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": "Database error",
+		})
+		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "User deleted successfully",
+	})
 }

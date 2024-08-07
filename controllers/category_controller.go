@@ -17,26 +17,16 @@ import (
 // @Accept  json
 // @Produce  json
 // @Success 200 {array} structs.Category
-// @Failure 500 {object} gin.H
-// @Router /categories [get]
+// @Failure 500 {object} structs.ErrorResponse
+// @Security Bearer
+// @Router /category [get]
 func GetAllCategories(c *gin.Context) {
-	var (
-		result gin.H
-	)
-
 	categories, err := repository.GetAllCategories(database.DbConnection)
-
 	if err != nil {
-		result = gin.H{
-			"result": err.Error(),
-		}
-	} else {
-		result = gin.H{
-			"result": categories,
-		}
+		c.JSON(http.StatusInternalServerError, structs.ErrorResponse{Error: err.Error()})
+		return
 	}
-
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, categories)
 }
 
 // InsertCategory godoc
@@ -47,19 +37,19 @@ func GetAllCategories(c *gin.Context) {
 // @Produce  json
 // @Param category body structs.Category true "Category data"
 // @Success 200 {object} structs.Category
-// @Failure 500 {object} gin.H
-// @Router /categories [post]
+// @Failure 500 {object} structs.ErrorResponse
+// @Security Bearer
+// @Router /category [post]
 func InsertCategory(c *gin.Context) {
 	var category structs.Category
-
-	err := c.BindJSON(&category)
-	if err != nil {
-		panic(err)
+	if err := c.BindJSON(&category); err != nil {
+		c.JSON(http.StatusBadRequest, structs.ErrorResponse{Error: "Invalid input"})
+		return
 	}
 
-	err = repository.InsertCategory(database.DbConnection, category)
-	if err != nil {
-		panic(err)
+	if err := repository.InsertCategory(database.DbConnection, category); err != nil {
+		c.JSON(http.StatusInternalServerError, structs.ErrorResponse{Error: err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, category)
@@ -74,22 +64,24 @@ func InsertCategory(c *gin.Context) {
 // @Param id path int true "Category ID"
 // @Param category body structs.Category true "Updated category data"
 // @Success 200 {object} structs.Category
-// @Failure 500 {object} gin.H
-// @Router /categories/{id} [put]
+// @Failure 400 {object} structs.ErrorResponse
+// @Failure 500 {object} structs.ErrorResponse
+// @Security Bearer
+// @Router /category/{id} [put]
 func UpdateCategory(c *gin.Context) {
 	var category structs.Category
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	err := c.BindJSON(&category)
-	if err != nil {
-		panic(err)
+	if err := c.BindJSON(&category); err != nil {
+		c.JSON(http.StatusBadRequest, structs.ErrorResponse{Error: "Invalid input"})
+		return
 	}
 
 	category.ID = id
 
-	err = repository.UpdateCategory(database.DbConnection, category)
-	if err != nil {
-		panic(err)
+	if err := repository.UpdateCategory(database.DbConnection, category); err != nil {
+		c.JSON(http.StatusInternalServerError, structs.ErrorResponse{Error: err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, category)
@@ -103,17 +95,16 @@ func UpdateCategory(c *gin.Context) {
 // @Produce  json
 // @Param id path int true "Category ID"
 // @Success 200 {object} structs.Category
-// @Failure 500 {object} gin.H
-// @Router /categories/{id} [delete]
+// @Failure 500 {object} structs.ErrorResponse
+// @Security Bearer
+// @Router /category/{id} [delete]
 func DeleteCategory(c *gin.Context) {
-	var category structs.Category
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	category.ID = id
-	err := repository.DeleteCategory(database.DbConnection, category)
-	if err != nil {
-		panic(err)
+	if err := repository.DeleteCategory(database.DbConnection, structs.Category{ID: id}); err != nil {
+		c.JSON(http.StatusInternalServerError, structs.ErrorResponse{Error: err.Error()})
+		return
 	}
 
-	c.JSON(http.StatusOK, category)
+	c.JSON(http.StatusOK, gin.H{"status": "deleted"})
 }
