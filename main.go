@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go-project-akhir-ezra/controllers"
 	"go-project-akhir-ezra/database"
+	_ "go-project-akhir-ezra/docs"
 	"go-project-akhir-ezra/middleware"
 
 	// "go-project-akhir-ezra/seeder"
@@ -12,12 +13,11 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
-
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var (
