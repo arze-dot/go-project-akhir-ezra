@@ -60,6 +60,11 @@ func InsertTransaction(c *gin.Context) {
 		return
 	}
 
+	if (transaction.Income != 0 && transaction.Expense != 0) || (transaction.Income == 0 && transaction.Expense == 0) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "One of income or expense must be 0"})
+		return
+	}
+
 	err = repository.InsertTransaction(database.DbConnection, transaction)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
