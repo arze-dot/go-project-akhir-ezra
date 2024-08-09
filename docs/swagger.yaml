@@ -116,7 +116,7 @@ definitions:
       username:
         type: string
     type: object
-host: localhost:8080
+host: go-project-akhir-ezra-production.up.railway.app
 info:
   contact: {}
   description: This is a sample API for managing budgets, categories, and transactions.
