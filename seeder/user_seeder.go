@@ -41,9 +41,9 @@ func SeedUsers(db *sql.DB) {
 
 		// Insert user into the database
 		_, err = db.Exec(`
-			INSERT INTO users (id, username, password, created_at, created_by, updated_at, updated_by)
+			INSERT INTO users (id, username, password, role, created_at, created_by, updated_at, updated_by)
 			VALUES ($1, $2, $3, $4, $5, $6, $7)
-		`, user.ID, user.Username, hashedPassword, user.CreatedAt, user.CreatedBy, user.UpdatedAt, user.UpdatedBy)
+		`, user.ID, user.Username, hashedPassword, user.Role, user.CreatedAt, user.CreatedBy, user.UpdatedAt, user.UpdatedBy)
 
 		if err != nil {
 			log.Fatalf("Could not insert user: %v", err)
