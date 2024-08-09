@@ -28,7 +28,7 @@ var (
 // @title Budget Tracking API
 // @version 1.0
 // @description This is a sample API for managing budgets, categories, and transactions.
-// @host http://localhost:8080
+// @host go-project-akhir-ezra-production.up.railway.app
 // @securityDefinitions.apikey Bearer
 // @in header
 // @name Authorization
